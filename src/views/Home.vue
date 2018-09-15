@@ -4,7 +4,7 @@
       <div class="header">
         <Menu mode="horizontal" theme="dark" active-name="1">
           <div class="layout-logo">
-            <img src="../assets/img/logo1.svg" height="35">
+            <img src="../assets/img/logo.svg" height="35">
             Res Manager
           </div>
           <div class="layout-nav">
@@ -43,7 +43,7 @@
   </div>
 </template>
 <script>
-  import resTree from '../components/resTree'
+  import resTree from '../components/res/res-tree'
   export default {
     components:{
       resTree
@@ -71,9 +71,14 @@
     .main{
       padding: 0 24px 24px;
     }
+    .ivu-menu-horizontal{
+      height: 70px;
+      line-height: 70px;
+    }
   }
   .layout-logo{
     font-size: 32px;
+    line-height: 70px;
     color: #ffffff;
     border-radius: 3px;
     float: left;

@@ -3,14 +3,19 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
-
+    isLogin: false,
+    title: '主页'
   },
   mutations: {
-
-  },
-  actions: {
-
+    isLogin: function (state, data) {
+      state.isLogin = data
+    },
+    title: function (state, data) {
+      state.title = data
+    }
   }
 })
+
+export default store
