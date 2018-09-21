@@ -1,0 +1,16 @@
+-- ------------------------------------------------------
+
+--  RESOURCE_FORM 资源表单表
+
+-- ------------------------------------------------------
+
+ CREATE TABLE `RESOURCE_FORM` (
+  `FORM_ID` VARCHAR(40) NOT NULL COMMENT '表单id,主键',
+  `RESOURCE_ID` VARCHAR(20) DEFAULT NULL COMMENT '资源id',
+  `FORM_NAME` VARCHAR(255) DEFAULT NULL COMMENT '表单名称',
+  `CREATE_DATE` DATETIME DEFAULT NULL COMMENT '创建时间',
+  `FORM_INFO` VARCHAR(3000) DEFAULT NULL COMMENT '表单详情',
+  `REMARK` VARCHAR(200) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`FORM_ID`)
+) ENGINE=INNODB DEFAULT CHARSET=UTF8 COMMENT='资源表单表';
+

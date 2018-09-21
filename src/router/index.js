@@ -10,21 +10,40 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: '主页',
       component: Home,
       children:[
         {
+          path: '/resMgr',
+          name: '资源管理',
+          component: () => import('../views/resMgr/ResConfigList.vue')
+        },
+        {
+          path: '/resDisplay',
+          name: '资源呈现',
+          component: () => import('../views/resMgr/ResList.vue')
+        },
+        {
+          path: '/resRelation',
+          name: '资源关系',
+          component: () => import('../views/resMgr/ResConfigList.vue')
+        },
+        {
+          path: '/resConfig',
+          name: '系统设置',
+          component: () => import('../views/resMgr/ResConfigList.vue')
+        },
+        {
           path: '/resConfigList',
           name: '资源字段列表',
+          hidden: true,
           component:  () => import('../views/resMgr/ResConfigList.vue')
         },
         {
-          path: '/about',
-          name: 'about',
-          // route level code-splitting
-          // this generates a separate chunk (about.[hash].js) for this route
-          // which is lazy-loaded when the route is visited.
-          component: () => import('../views/About.vue')
+          path: '/resEdit',
+          name: '资源修改',
+          hidden: true,
+          component:  () => import('../views/resMgr/ResEdit.vue')
         }
       ]
     }

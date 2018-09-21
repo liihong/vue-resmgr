@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var $sql = require('../config/sqlMap');
-var dbHelper = require('../modules/dbHelper')
+var dbHelper = require('../utils/dbHelper')
 
 
 // 增加用户接口

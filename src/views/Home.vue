@@ -1,92 +1,162 @@
 
 <template>
   <div class="layout">
-      <div class="header">
-        <Menu mode="horizontal" theme="dark" active-name="1">
-          <div class="layout-logo">
-            <img src="../assets/img/logo.svg" height="35">
-            Res Manager
-          </div>
-          <div class="layout-nav">
-            <MenuItem name="1">
-              <Icon type="ios-navigate"></Icon>
-              资源管理
-            </MenuItem>
-            <MenuItem name="2">
-              <Icon type="ios-keypad"></Icon>
-              资源测试
-            </MenuItem>
-            <MenuItem name="3">
-              <Icon type="ios-analytics"></Icon>
-              资源统计
-            </MenuItem>
-            <MenuItem name="4">
-              <Icon type="ios-paper"></Icon>
-              系统管理
-            </MenuItem>
-          </div>
-        </Menu>
-      </div>
-      <Layout>
-        <Sider class="left" hide-trigger>
-          <res-tree></res-tree>
-        </Sider>
-        <Layout class="main">
-          <Breadcrumb :style="{margin: '24px 0'}">
-            <BreadcrumbItem>{{$store.state.title}}</BreadcrumbItem>
-          </Breadcrumb>
-          <Content :style="{padding: '24px', minHeight: '500px', background: '#fff'}">
-            <router-view></router-view>
-          </Content>
-        </Layout>
-      </Layout>
+    <el-col :span="24" class="header">
+      <el-col :span="10" class="logo" :class="'logo-width'">
+        <img class="logoImg" :src="logo" height="35">
+        <h1>{{title}}</h1>
+      </el-col>
+      <el-col :span="10">
+        <el-menu router :default-active="activeIndex" mode="horizontal" @select="handleSelect" background-color="#232f3f" text-color="#fff" active-text-color="#ffd04b">
+          <el-menu-item v-for="(item,index) in $router.options.routes[0].children" :key="index" :index="item.path" v-if="!item.hidden">{{item.name}}</el-menu-item>
+        </el-menu>
+      </el-col>
+      <el-col :span="4" class="userinfo">
+        <img :src="this.userAvatar" />
+        <el-dropdown trigger="hover">
+          <span class="el-dropdown-link userinfo-inner">
+            {{userName}}
+            <i class="el-icon-caret-bottom el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>我的消息</el-dropdown-item>
+            <el-dropdown-item>设置</el-dropdown-item>
+            <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </el-col>
+    </el-col>
+    <div class="main">
+      <aside class="tree">
+        <resTree></resTree>
+      </aside>
+      <section class="content-container">
+        <div class="grid-content bg-purple-light">
+          <el-col :span="24" class="breadcrumb-container">
+            <el-breadcrumb separator=">">
+              <el-breadcrumb-item v-for="item in $route.matched" :key="item.path">{{item.name}}</el-breadcrumb-item>
+              <el-breadcrumb-item>{{$store.state.title}}</el-breadcrumb-item>
+            </el-breadcrumb>
+          </el-col>
+          <el-col :span="24" class="content-wrapper">
+            <transition name="fade" mode="out-in">
+              <router-view class="router-view"></router-view>
+            </transition>
+          </el-col>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 <script>
-  import resTree from '../components/res/res-tree'
-  export default {
-    components:{
-      resTree
-    },
-    data(){
-      return {
-      }
-    },
-    mounted(){
-      console.log(this.$store.state.title)
+import resTree from '../components/res/res-tree'
+import logo from '../assets/img/logo.svg'
+import userAvatar from '../assets/img/user.png'
+export default {
+  components: {
+    resTree
+  },
+  data() {
+    return {
+      logo: logo,
+      title: 'Res Manager',
+      userName: '我来也',
+      userAvatar: userAvatar,
+      collapsed: false,
+      menuData: [],
+      activeIndex: '/resMgr'
+    }
+  },
+  mounted() {},
+  methods: {
+    handleSelect(key) {
+      this.$store.commit('activeMenu', key.replace('/', ''))
     }
   }
+}
 </script>
 <style lang="less" scoped>
-  .layout{
-    border: 1px solid #d7dde4;
-    background: #f5f7f9;
-    position: relative;
-    border-radius: 4px;
-    height:100%;
+.el-header {
+  background-color: #232f3f;
+}
+.layout {
+  height: 100%;
+  width: 100%;
+  .header {
+    height: 60px;
+    line-height: 60px;
+    background-color: #232f3f;
+    .logo {
+      display: flex;
+      padding-left: 30 * @base;
+      align-items: center;
+    }
+    h1 {
+      color: #fff;
+      font-size: 32px;
+      margin-left: 10px;
+    }
+    .userinfo {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 20 * @base;
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        margin: 10px 0px 10px 10px;
+      }
+      .userinfo-inner {
+        cursor: pointer;
+        color: #fff;
+        margin-left: 16 * @base;
+        font-weight: 900;
+      }
+    }
+  }
+  .main {
+    display: flex;
+    position: absolute;
+    top: 60px;
+    bottom: 0px;
     overflow: hidden;
-    .left{
-      background: #ffffff;
-    }
-    .main{
-      padding: 0 24px 24px;
-    }
-    .ivu-menu-horizontal{
-      height: 70px;
-      line-height: 70px;
+    width: 100%;
+    .tree {
+      width: 200px;
+      .el-tree {
+        background-color: #eef1f6;
+      }
     }
   }
-  .layout-logo{
-    font-size: 32px;
-    line-height: 70px;
-    color: #ffffff;
-    border-radius: 3px;
-    float: left;
-    position: relative;
-    left: 20px;
+  .breadcrumb-container {
+    padding: 20px;
+    border-bottom: 1px solid #eeeeee;
   }
-  .layout-nav{
-    width: 500px;
-    margin: 0 auto;
+  .router-view {
+    height: 100%;
+    padding: 22px 20px;
+    overflow-y: auto;
   }
+}
+
+.content-container {
+  flex: 1;
+  overflow-y: scroll;
+  .breadcrumb-container {
+    .title {
+      width: 200px;
+      float: left;
+      color: #475669;
+    }
+    .breadcrumb-inner {
+      float: right;
+    }
+  }
+  .content-wrapper {
+    background-color: #fff;
+    height: 100%;
+    box-sizing: border-box;
+  }
+}
 </style>

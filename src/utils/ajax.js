@@ -4,7 +4,7 @@ import axios from 'axios'
 let cancel, promiseArr = {}
 const CancelToken = axios.CancelToken;
 
-axios.defaults.baseURL = 'http://127.0.0.1:3000/api'
+axios.defaults.baseURL = '/api'
 //设置默认请求头
 axios.defaults.headers = {
   'X-Requested-With': 'XMLHttpRequest'
@@ -90,7 +90,11 @@ export default {
           cancel = c
         })
       }).then(res => {
-        resolve(res.data)
+        if(res.status === 200) {
+          resolve(res.data)
+        } else {
+          reject(res)
+        }
       }).catch(err => {
         reject(err)
       })

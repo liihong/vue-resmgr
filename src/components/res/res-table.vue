@@ -158,8 +158,8 @@ export default {
   name: 'canEditTable',
   props: {
     refs: String,
-    columnsList: Array,
-    value: Array,
+    columnsList: Array, // 列数据
+    value: Array, // 表格数据
     url: String,
     editIncell: {
       type: Boolean,
@@ -183,7 +183,7 @@ export default {
   methods: {
     init() {
       let vm = this
-      if (this.columnsList) {
+      if (this.columnsList.length > 0) {
         let editableCell = this.columnsList.filter(item => {
           if (item.editable) {
             if (item.editable === true) {

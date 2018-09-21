@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var $sql = require('../config/sqlMap');
-var dbHelper = require('../modules/dbHelper')
+var dbHelper = require('../utils/dbHelper')
 
 let resMgrSql = $sql.resmgr
 // 获取资源树
