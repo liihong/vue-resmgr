@@ -125,6 +125,7 @@ export default {
     .tree {
       width: 200px;
       .el-tree {
+        padding: 20px;
         background-color: #eef1f6;
       }
     }

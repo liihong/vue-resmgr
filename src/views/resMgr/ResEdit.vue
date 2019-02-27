@@ -8,12 +8,12 @@
             <span>{{item.column_cname}}-{{item.property_type}}</span>
           </el-col>
           <el-col :span="16">
+            <!--主键-->
             <template v-if="item.property_type == '10'">
               <span v-show="false">{{formData[(item.column_name).toLowerCase()]}}</span>
             </template>
             <template v-else-if="item.property_type == '2'">
               <!--下拉选择-->
-
               <el-select remote :remote-method="getSjzdData" v-model="formData[item.column_name]"></el-select>
             </template>
             <template v-else-if="item.property_type == '4'">
@@ -62,18 +62,35 @@ export default {
   },
   mounted() {
     const vm = this
-    this.getConfig().then(res => {
+    this.getConfig().then(() => {
       this.columnData.forEach(item => {
-        console.log(item)
         if (item.property_type == '2') {
           vm.getSjzdData(item.typesql)
         }
       })
     })
-    this.getFormData()
+    if (this.optionType == 'edit') this.getFormData()
   },
   methods: {
-    onSubmit() {},
+    onSubmit() {
+      this.formData.tableId = this.tableId
+      let params = this.$refs['form'].model
+      if (this.optionType == 'edit') {
+        this.$ajax.post(this.$api.editTableRes, params).then(res => {
+          if(res && res.data && res.data.data == 1) {
+            this.$message('修改成功')
+            this.$router.go(-1)
+          }
+        })
+      } else {
+        this.$ajax.post(this.$api.addTableRes, params).then(res => {
+           if(res && res.data && res.data.data == 1) {
+            this.$message('添加成功')
+            this.$router.go(-1)
+          }
+        })
+      }
+    },
     //获取表单属性配置信息
     getConfig() {
       return this.$ajax
@@ -84,6 +101,7 @@ export default {
         .then(res => {
           if (res.data.length && res.data.length > 0) {
             this.columnData = res.data
+            console.log(this.columnData)
           }
         })
     },

@@ -77,4 +77,37 @@ module.exports = class extends Base {
             return this.fail(err)
         }
     }
+
+    // 添加资源
+    async addTableResAction() {
+
+    }
+
+    // 修改资源
+    async editTableResAction() {
+        try {
+            let tableId = this.post('tableId')
+            let updateInfo = this.post()
+            delete updateInfo.tableId;
+            let table = await this.model('resource_table').getTableInfo(tableId)
+            let affectedRows = await this.model(table[0].table_name).where().update(updateInfo);
+            return this.success(affectedRows)
+        }catch(ex) {
+            return this.fail(ex)
+        }
+
+    }
+
+    async deleteTableResAction() {
+        try {
+            let tableId = this.post('tableId')
+            let updateInfo = this.post()
+            delete updateInfo.tableId;
+            let table = await this.model('resource_table').getTableInfo(tableId)
+            let affectedRows = await this.model(table[0].table_name).where(updateInfo).delete();
+            return this.success(affectedRows)
+        }catch(ex) {
+            return this.fail(ex)
+        }
+    }
 };

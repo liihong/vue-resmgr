@@ -11,6 +11,10 @@ let api = {
   getTableColumns: '/resTableColumn/getTableColumn',
   //资源呈现时数据查询
   queryTableData: '/resTable/queryTableData',
-  queryDataById: '/resTable/queryDataById'
+  queryDataById: '/resTable/queryDataById',
+
+  addTableRes: '/resTable/addTableRes',
+  editTableRes: '/resTable/editTableRes',
+  deleteTableRes: '/resTable/deleteTableRes'
 }
 export default api

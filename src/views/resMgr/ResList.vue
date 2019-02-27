@@ -36,8 +36,8 @@
       </el-table-column>
       <el-table-column fixed="left" label="操作" width="150" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row.ID)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row.ID)">删除</el-button>
+          <el-button size="mini" @click="handleEdit(scope.row.ID)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column v-if="row.isunique != '1'" v-for="(row,index) in resRows" :key="index" :prop="row.column_name" :fixed="(row.is_frozen == 1?'left':false)" :label="row.column_cname" :min-width="(row.columnlength != '')?row.columnlength:150" sortable>
@@ -129,6 +129,16 @@ export default {
         path: '/resEdit',
         query: { tableId: this.tableId, id: id, type: 'edit' }
       })
+    },
+    handleDelete(row) {
+      let params = this.$util.objToFormData(row)
+      params.append('tableId',this.tableId)
+      this.$ajax.post(this.$api.deleteTableRes, params).then(res => {
+          if(res && res.data && res.data.data == 1) {
+            this.$message( {message: '删除成功', type: 'success'})
+            this.getResList()
+          }
+        })
     },
     handleCurrentChange(val) {
       this.pageNumber = val

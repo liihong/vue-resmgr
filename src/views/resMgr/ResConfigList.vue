@@ -28,6 +28,12 @@
            <el-input v-model="scope.row.COLUMN_CNAME" placeholder="请输入内容"></el-input>
           </template>
         </el-table-column>
+         <el-table-column label="是否是主键" prop="ISLIST">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.ISLIST" active-value="1" inactive-value="0">
+            </el-switch>
+          </template>
+        </el-table-column>
         <el-table-column label="是否视图展示" prop="ISLIST">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.ISLIST" active-value="1" inactive-value="0">

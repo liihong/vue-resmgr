@@ -178,4 +178,11 @@ util.removal = function (a, m) {
 util.goBackRouter = function() {
     router.go(-1)
 }
+util.objToFormData = function(obj) {
+    var params = new FormData()
+    Object.keys(obj).map(function(item) {
+      params.append(item, obj[item])
+    })
+    return params
+  }
 export default util
