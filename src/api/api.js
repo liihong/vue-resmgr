@@ -9,12 +9,19 @@ let api = {
 
   //资源呈现时表头信息
   getTableColumns: '/resTableColumn/getTableColumn',
-  //资源呈现时数据查询
-  queryTableData: '/resTable/queryTableData',
-  queryDataById: '/resTable/queryDataById',
+  getDropDownListData: '/resTableColumn/getDropDownListData',
+ 
 
   addTableRes: '/resTable/addTableRes',
   editTableRes: '/resTable/editTableRes',
-  deleteTableRes: '/resTable/deleteTableRes'
+  deleteTableRes: '/resTable/deleteTableRes',
+
+
+  //对物理表进行操作的接口
+  queryTableData: '/tableData/queryTableData',
+  queryDataById: '/tableData/queryTableDataById',
+  addTableData: '/tableData/add',
+  editTableData: '/tableData/edit',
+  deleteTableData: '/tableData/delete'
 }
 export default api

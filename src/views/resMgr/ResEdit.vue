@@ -5,7 +5,7 @@
       <el-form class="form" :inline="true" ref="form" :model="formData" label-width="120px" size="small">
         <el-row v-show="item.property_type !== '10'" v-for="(item,i) in columnData" :key="i" class="item">
           <el-col :span="8" class="title">
-            <span>{{item.column_cname}}-{{item.property_type}}</span>
+            <span>{{item.column_cname}}</span>
           </el-col>
           <el-col :span="16">
             <!--主键-->
@@ -14,15 +14,22 @@
             </template>
             <template v-else-if="item.property_type == '2'">
               <!--下拉选择-->
-              <el-select remote :remote-method="getSjzdData" v-model="formData[item.column_name]"></el-select>
+              {{formData[item.column_name]}}
+              <el-select style="width:100%" remote :remote-method="getSjzdData" v-model="formData[item.column_name.toLowerCase()]">
+                <el-option v-for="(item,key) in dropDownListData[item.column_name.toLowerCase()]" :key="key" :label="item.NAME" :value="item.id"></el-option>
+              </el-select>
             </template>
+
             <template v-else-if="item.property_type == '4'">
               <!--数据字典-->
-              <el-select v-model="formData[item.column_name]"></el-select>
+              <el-select  style="width:100%" v-model="formData[item.column_name.toLowerCase()]">
+                <el-option v-for="(item,key) in dropDownListData[item.column_name.toLowerCase()]" :key="key" :label="item.NAME" :value="item.id"></el-option>
+              </el-select>
             </template>
+
             <template v-else-if="item.property_type == '5'">
               <!--日期-->
-              <el-date-picker v-model="formData[(item.column_name).toLowerCase()]" type="date" placeholder="选择日期">
+              <el-date-picker value-format="yyyy-MM-DD"  style="width:100%" v-model="formData[(item.column_name).toLowerCase()]" type="date" placeholder="选择日期">
               </el-date-picker>
             </template>
             <template v-else>
@@ -46,7 +53,8 @@ export default {
     return {
       columnData: [],
       formData: {},
-      dropDownListData: {}
+      dropDownListData: {},
+      primaryKey: {}
     }
   },
   computed: {
@@ -64,8 +72,11 @@ export default {
     const vm = this
     this.getConfig().then(() => {
       this.columnData.forEach(item => {
-        if (item.property_type == '2') {
-          vm.getSjzdData(item.typesql)
+        if (item.property_type == '2' || item.property_type == '4') {
+          vm.getSjzdData(item.column_name.toLowerCase(), item.typesql)
+        }
+        if(item.property_type == '10'){
+          this.primaryKey.name = item.column_name
         }
       })
     })
@@ -73,18 +84,20 @@ export default {
   },
   methods: {
     onSubmit() {
-      this.formData.tableId = this.tableId
-      let params = this.$refs['form'].model
+      let params = {}
+      params.form =  this.$refs['form'].model
+      params.tableId = this.tableId
       if (this.optionType == 'edit') {
-        this.$ajax.post(this.$api.editTableRes, params).then(res => {
-          if(res && res.data && res.data.data == 1) {
+        params.primaryKey = this.primaryKey
+        this.$ajax.post(this.$api.editTableData, params).then(res => {
+          if (res && res.data && res.data.data == 1) {
             this.$message('修改成功')
             this.$router.go(-1)
           }
         })
       } else {
-        this.$ajax.post(this.$api.addTableRes, params).then(res => {
-           if(res && res.data && res.data.data == 1) {
+        this.$ajax.post(this.$api.addTableData, params).then(res => {
+          if (res && res.data && res.data.data == 0) {
             this.$message('添加成功')
             this.$router.go(-1)
           }
@@ -101,12 +114,12 @@ export default {
         .then(res => {
           if (res.data.length && res.data.length > 0) {
             this.columnData = res.data
-            console.log(this.columnData)
           }
         })
     },
     // 获取表单数据，如果是编辑进行数据回填
     getFormData() {
+      this.primaryKey.value  = this.resId
       this.$ajax
         .get(this.$api.queryDataById, {
           tableId: this.tableId,
@@ -117,13 +130,13 @@ export default {
         })
     },
     // 获取数据字典数据
-    getSjzdData(sql) {
+    getSjzdData(attr, sql) {
       this.$ajax
-        .get(this.$api.queryDropDownListData, {
+        .get(this.$api.getDropDownListData, {
           typesql: sql
         })
         .then(res => {
-          this.formData = res.data
+          this.$set(this.dropDownListData, attr, res.data)
         })
     }
   }

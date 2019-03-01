@@ -5,16 +5,20 @@
       <el-form :inline="true" :model="filters">
         <el-form-item>模糊查询:</el-form-item>
         <el-form-item item-width="300px">
-          <el-select v-model="selColumns" multiple filterable placeholder="请选择">
-            <el-option v-for="item in resRows" :key="item.column_cname" :label="item.column_cname" :value="item.column_name">
+          <el-select v-model="filters.columns" @change="changeSelectQuery" filterable placeholder="请选择">
+            <el-option v-for="item in resRows" :key="item.column_cname" :label="item.column_cname" :value="item.column_name" v-if="item.property_type != '10'">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="filters.name" placeholder="模糊查询"></el-input>
+          <el-select v-if="selectObj.property_type == '2' || selectObj.property_type == '4'" v-model="filters.value" multiple filterable placeholder="请选择">
+            <el-option v-for="item in selectObj['data']" :key="item.id" :label="item.NAME" :value="item.id">
+            </el-option>
+          </el-select>
+          <el-input v-else v-model="filters.name" placeholder="模糊查询"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button v-on:click="getResList" type="primary" size="small" icon="el-icon-search">查询</el-button>
+          <el-button v-on:click="queryDataClick" type="primary" size="small" icon="el-icon-search">查询</el-button>
         </el-form-item>
         <el-form-item>
           <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-circle-plus">新增</el-button>
@@ -26,7 +30,7 @@
     </el-col>
 
     <!--列表-->
-    <el-table :data="resDatas" v-loading="listLoading" header-cell-class-name="table_th" stripe border :max-height="tableHeight" style="width: 100%;">
+    <el-table @selection-change="selsChange" :data="resDatas" v-loading="listLoading" header-cell-class-name="table_th" stripe border :max-height="tableHeight" style="width: 100%;">
       <el-table-column fixed="left" type="selection" width="50" align="center">
       </el-table-column>
       <el-table-column fixed="left" type="index" width="50" align="center">
@@ -36,7 +40,7 @@
       </el-table-column>
       <el-table-column fixed="left" label="操作" width="150" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.row.ID)">编辑</el-button>
+          <el-button size="mini" @click="handleEdit(scope.row[primaryKey])">编辑</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -59,7 +63,8 @@ export default {
     return {
       filters: {
         columns: '',
-        name: ''
+        name: '',
+        value: ''
       },
       resRows: [],
       resDatas: [],
@@ -68,7 +73,7 @@ export default {
       pageSize: 30,
       listLoading: false,
       sels: [], //列表选中列
-      selColumns: [],
+      selectObj: {},
       tableHeight: 600
     }
   },
@@ -79,18 +84,49 @@ export default {
       } else {
         return this.$route.query.tableId
       }
+    },
+    primaryKey() {
+      let key = ''
+      this.resRows.map(item => {
+        if (item.property_type == '10') {
+          key = item.column_name
+        }
+      })
+      return key
     }
   },
   methods: {
+    changeSelectQuery(name) {
+      this.selectObj = this.resRows.filter(item => {
+        return item.column_name == name
+      })[0]
+      if (
+        this.selectObj.property_type == '2' ||
+        this.selectObj.property_type == '4'
+      ) {
+        this.getSjzdData('data', this.selectObj.typesql)
+      }
+    },
     //获取表格配置信息
     getConfig() {
-      this.$ajax.get(this.$api.getTableColumns, {
-        flag: 'list',
-        tableId: this.tableId
-      }).then(res => {
-        this.resRows = res.data
-        this.listLoading = false
-      })
+      this.$ajax
+        .get(this.$api.getTableColumns, {
+          flag: 'list',
+          tableId: this.tableId
+        })
+        .then(res => {
+          this.resRows = res.data
+          this.listLoading = false
+        })
+    },
+    queryDataClick() {
+      this.pageNumber = 1
+      if (this.$util.typeOfObj(this.filters.value) == 'Array') {
+        this.filters.name = this.filters.value.join(',')
+      } else {
+        this.filters.name = this.filters.value
+      }
+      this.getResList()
     },
     //获取表格数据
     getResList: function() {
@@ -100,9 +136,8 @@ export default {
         pageSize: this.pageSize
       }
       if (this.filters.name != '') {
-        params.querytype = '1'
-        params.queryColumn = this.selColumns.join('|')
-        params.queryKey =  this.filters.name
+        params.queryColumn = this.filters.columns
+        params.queryKey = this.filters.name
       }
       this.$ajax.get(this.$api.queryTableData, params).then(res => {
         if (res.data) {
@@ -124,21 +159,27 @@ export default {
       })
     },
     // 编辑按钮事件处理
-    handleEdit(index, id) {
+    handleEdit(id) {
       this.$router.push({
         path: '/resEdit',
         query: { tableId: this.tableId, id: id, type: 'edit' }
       })
     },
     handleDelete(row) {
-      let params = this.$util.objToFormData(row)
-      params.append('tableId',this.tableId)
-      this.$ajax.post(this.$api.deleteTableRes, params).then(res => {
-          if(res && res.data && res.data.data == 1) {
-            this.$message( {message: '删除成功', type: 'success'})
+      this.$confirm('请确认是否删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let params = this.$util.objToFormData(row)
+        params.append('tableId', this.tableId)
+        this.$ajax.post(this.$api.deleteTableData, params).then(res => {
+          if (res && res.data && res.data.data == 1) {
+            this.$message({ message: '删除成功', type: 'success' })
             this.getResList()
           }
         })
+      })
     },
     handleCurrentChange(val) {
       this.pageNumber = val
@@ -154,23 +195,29 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.listLoading = true
-          let para = { ids: ids }
-          this.batchRemoveUser(para).then(res => {
-            this.listLoading = false
-            if (res.data) {
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              })
-              this.getUsers()
+          // this.listLoading = true
+          console.log(ids)
+          // let para = { ids: ids }
+          let params = this.$util.objToFormData(this.sels)
+          params.append('tableId', this.tableId)
+          this.$ajax.post(this.$api.deleteTableData, params).then(res => {
+            if (res && res.data && res.data.data == 1) {
+              this.$message({ message: '删除成功', type: 'success' })
+              this.getResList()
             }
           })
         })
         .catch(() => {})
     },
-    batchRemoveUser(params) {
-      console.log(params)
+    // 获取数据字典数据
+    getSjzdData(attr, sql) {
+      this.$ajax
+        .get(this.$api.getDropDownListData, {
+          typesql: sql
+        })
+        .then(res => {
+          this.$set(this.selectObj, attr, res.data)
+        })
     }
   },
   mounted() {
@@ -189,11 +236,11 @@ export default {
 </script>
 <style lang="less" scoped>
 .toolbar {
-     padding: 10px;
-    margin: 10px 0;
+  padding: 10px;
+  margin: 10px 0;
   background: #f2f2f2;
   .el-form-item {
     margin-bottom: 0px;
-}
+  }
 }
 </style>

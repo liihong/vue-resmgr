@@ -22,4 +22,15 @@ module.exports = class extends Base {
             return this.fail(err)
         }
     }
+
+    async getDropDownListDataAction(){
+        try {
+            let sql = this.get('typesql')
+            
+            let data = await this.model('resource_table_column').getTypeSqlData(sql)
+            return this.success(data)
+        } catch (err) {
+            return this.fail(err)
+        }
+    }
 };

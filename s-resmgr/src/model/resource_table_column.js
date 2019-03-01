@@ -17,4 +17,17 @@ module.exports = class extends think.Model {
             .where(whereObj).order(order).select()
         return data
     }
+    async getPrimaryKey(tableId){
+        let whereObj = {
+            table_id: tableId,
+            property_type: '10'
+        }
+        let data = await this.field(['column_name,column_cname,data_type,isunique,property_type,typesql'])
+            .where(whereObj).find()
+        return data
+    }
+    async getTypeSqlData(typesql){
+        let table = await this.query(typesql);
+        return table
+    }
 };
