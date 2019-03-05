@@ -1,4 +1,5 @@
 module.exports = class extends think.Model {
+
     async getColumnList(tableId, flag) {
         let whereObj = {
             table_id: tableId

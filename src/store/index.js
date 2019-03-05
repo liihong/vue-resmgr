@@ -8,7 +8,8 @@ const store = new Vuex.Store({
     isLogin: false,
     title: '主页',
     tableId: '0101',
-    activeMenu: 'resMgr'
+    activeMenu: 'resMgr',
+    selectAttrData: {}
   },
   mutations: {
     isLogin (state, data) {
@@ -22,6 +23,9 @@ const store = new Vuex.Store({
     },
     activeMenu(state, data) {
       state.activeMenu = data
+    },
+    selectAttrData(state, data) {
+      state.selectAttrData = data
     }
   }
 })

@@ -16,6 +16,7 @@ let api = {
   editTableRes: '/resTable/editTableRes',
   deleteTableRes: '/resTable/deleteTableRes',
 
+  editTableResColumns: '/resTableColumn/editTableResColumns',
 
   //对物理表进行操作的接口
   queryTableData: '/tableData/queryTableData',

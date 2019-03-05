@@ -3,10 +3,10 @@
     <div style="margin: 10px">
       <el-button size="small" type="primary" icon="el-icon-circle-plus">新增</el-button>
       <el-button size="small" type="primary" icon="el-icon-remove">批量删除</el-button>
-      <el-button size="small" type="warning"  icon="el-icon-check">保存</el-button>
+      <el-button @click="saveClick" size="small" type="warning"  icon="el-icon-check">保存</el-button>
     </div>
     <div class="table">
-      <el-table ref="columnConfig" height="600" stripe border size="small" :data="tableData" style="width: 100%">
+      <el-table @row-dblclick="rowDblClick" ref="columnConfig" height="600" stripe border size="small" :data="tableData" style="width: 100%">
         <el-table-column type="index" width="40"></el-table-column>
           <el-table-column type="selection" width="45">
           </el-table-column>
@@ -28,9 +28,9 @@
            <el-input v-model="scope.row.COLUMN_CNAME" placeholder="请输入内容"></el-input>
           </template>
         </el-table-column>
-         <el-table-column label="是否是主键" prop="ISLIST">
+         <el-table-column label="是否必填" prop="ISLIST">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.ISLIST" active-value="1" inactive-value="0">
+            <el-switch v-model="scope.row.ISMUST" active-value="1" inactive-value="0">
             </el-switch>
           </template>
         </el-table-column>
@@ -48,7 +48,7 @@
         </el-table-column>
         <el-table-column label="是否可编辑" prop="IS_EDIT">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.IS_EDIT" active-value="1" inactive-value="0">
+            <el-switch v-model="scope.row.ISUPDATE" active-value="1" inactive-value="0">
             </el-switch>
           </template>
         </el-table-column>
@@ -103,9 +103,29 @@ export default {
   },
   mounted() {
     this.getColumnData()
-    // console.log(this.$route)
   },
   methods: {
+    // 双击行的时候进入某个字段的详细设置
+    rowDblClick(row){
+      this.$store.commit('selectAttrData', row)
+      this.$router.push({
+        path: '/resAttrEdit',
+        query: { tableId: this.tableId, id: row.COLUMN_ID, type: 'edit' }
+      })
+    },
+    // 点击保存
+    saveClick(){
+      let params = {}
+      params.form =  this.tableData
+      params.tableId = this.tableId
+      this.$ajax
+        .post(this.$api.editTableResColumns, params)
+        .then(res => {
+          if (res.data){
+            console.log(res.data)
+          }
+        })
+    },
     getColumnData() {
       this.$ajax
         .get(this.$api.getResColumnData, {

@@ -16,7 +16,13 @@ export default new Router({
         {
           path: '/resMgr',
           name: '资源管理',
-          component: () => import('../views/resMgr/ResConfigList.vue')
+          component: () => import('../views/resConfig/ResConfigList.vue')
+        },
+        {
+          path: '/resAttrEdit',
+          name: '资源属性修改',
+          hidden: true,
+          component:  () => import('../views/resConfig/resAttrEdit.vue')
         },
         {
           path: '/resDisplay',
@@ -26,18 +32,18 @@ export default new Router({
         {
           path: '/resRelation',
           name: '资源关系',
-          component: () => import('../views/resMgr/ResConfigList.vue')
+          component: () => import('../views/resConfig/ResConfigList.vue')
         },
         {
           path: '/resConfig',
           name: '系统设置',
-          component: () => import('../views/resMgr/ResConfigList.vue')
+          component: () => import('../views/resConfig/ResConfigList.vue')
         },
         {
           path: '/resConfigList',
           name: '资源字段列表',
           hidden: true,
-          component:  () => import('../views/resMgr/ResConfigList.vue')
+          component:  () => import('../views/resConfig/ResConfigList.vue')
         },
         {
           path: '/resEdit',
