@@ -23,6 +23,7 @@ let api = {
   queryDataById: '/tableData/queryTableDataById',
   addTableData: '/tableData/add',
   editTableData: '/tableData/edit',
-  deleteTableData: '/tableData/delete'
+  deleteTableData: '/tableData/delete',
+  exportExcel: '/excel/exportExcel'
 }
 export default api

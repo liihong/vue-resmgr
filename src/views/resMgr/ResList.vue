@@ -149,7 +149,13 @@ export default {
     },
     //导出
     handleExport() {
-      window.location.href = this.$api.exportData + '?tableId=' + this.tableId
+      this.$ajax.post(this.$api.exportExcel).then(res => {
+        if (res.data) {
+          this.resDatas = res.data.data
+          this.total = parseInt(res.data.count)
+          this.listLoading = false
+        }
+      })
     },
     //新增按钮
     handleAdd() {

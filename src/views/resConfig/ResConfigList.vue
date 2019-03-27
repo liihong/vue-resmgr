@@ -116,6 +116,10 @@ export default {
     // 点击保存
     saveClick(){
       let params = {}
+      this.tableData = this.tableData.map((item,i)=>{
+        item.id = i
+        return item
+      })
       params.form =  this.tableData
       params.tableId = this.tableId
       this.$ajax

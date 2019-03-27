@@ -9,7 +9,7 @@ module.exports = class extends Base {
         let tableId = this.post('tableId')
         let updateInfos = this.post('form')
         console.log(updateInfos)
-        const data = await this.model('resource_table_column').updateMany(updateInfos,{pk: 'COLUMN_ID'});
+        const data = await this.model('resource_table_column').updateMany(updateInfos,{pk: 'COLUMN_ID',where: `TABLE_ID=${tableId}`});
         return this.success(data)
     }
 
