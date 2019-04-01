@@ -90,11 +90,25 @@ export default {
           cancel = c
         })
       }).then(res => {
-        if(res && res.status && res.status === 200) {
+        if (res && res.status && res.status === 200) {
           resolve(res.data)
         } else {
           reject(res)
         }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  getBolb(url, param) {
+    return new Promise((resolve, reject) => {
+      return axios({
+        url: url,
+        method: 'GET',
+        params: param,
+        responseType: 'blob'
+      }).then(res => {
+        resolve(res)
       }).catch(err => {
         reject(err)
       })

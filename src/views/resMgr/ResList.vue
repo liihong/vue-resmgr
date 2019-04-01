@@ -149,13 +149,29 @@ export default {
     },
     //导出
     handleExport() {
-      this.$ajax.post(this.$api.exportExcel).then(res => {
-        if (res.data) {
-          this.resDatas = res.data.data
-          this.total = parseInt(res.data.count)
-          this.listLoading = false
-        }
-      })
+      // const href = this.$api.exportExcel + '?tableId=' + this.tableId
+      // window.location.href = href
+      this.$ajax
+        .getBolb(this.$api.exportExcel, { tableId: this.tableId })
+        .then(res => {
+          if (res.data) {
+            let url = URL.createObjectURL(res.data)
+            let fileName = res.headers['content-disposition'].split('=')[1]
+            fileName = decodeURI(fileName)
+            let link = document.createElement('a')
+            link.style.display = 'none'
+            link.href = url
+            link.setAttribute('id', 'downloadLink')
+            link.setAttribute('download', fileName)
+            document.body.appendChild(link)
+            link.click()
+            // 删除添加的a链接
+            let objLink = document.getElementById('downloadLink')
+            document.body.removeChild(objLink)
+            // 释放内存
+            // URL.revokeOjbectURL(url)
+          }
+        })
     },
     //新增按钮
     handleAdd() {

@@ -49,7 +49,7 @@
   </div>
 </template>
 <script>
-import resTree from '../components/res/res-tree'
+import resTree from './resConfig/tree/resTree'
 import logo from '../assets/img/logo.svg'
 import userAvatar from '../assets/img/user.png'
 export default {

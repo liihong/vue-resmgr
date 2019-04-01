@@ -108,7 +108,7 @@ export default {
     getConfig() {
       return this.$ajax
         .get(this.$api.getTableColumns, {
-          flag: 'edit',
+          flag: 'UPDATE',
           tableId: this.tableId
         })
         .then(res => {
