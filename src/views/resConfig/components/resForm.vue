@@ -1,6 +1,6 @@
 <template>
     <div class="userForm">
-        <el-dialog size="small" title="资源管理" :visible.sync="dialogState.show" :close-on-click-modal="false">
+        <el-dialog size="small" :title="dialogState.name" :visible.sync="dialogState.show" :close-on-click-modal="false">
             <el-form  :inline="true" :model="dialogState.formData" ref="ruleForm" label-width="120px" :rules="rules" class="demo-ruleForm">
                  <el-form-item label="资源ID" prop="TABLE_ID">
                     <el-input size="small" v-model="dialogState.formData.TABLE_ID"></el-input>
@@ -35,7 +35,7 @@
 </template>
 <script>
 export default {
-  name: 'userForm',
+  name: 'resForm',
   components: {},
   props: {
     dialogState: Object,
@@ -45,16 +45,14 @@ export default {
     return {
       roleData: [],
       rules: {
-        userName: [
-          { required: true, message: '请输入用户名', trigger: 'blur'},
-          { max: 20, message: '用户名最多输入20个字符', trigger: 'blur'},
+        TABLE_ID: [
+          { required: true, message: '请输入表ID', trigger: 'blur'},
         ],
-        roleName: [
-          { required: true, message: '请选择角色', trigger: 'blur' },
+        TABLE_NAME: [
+          { required: true, message: '请输入表名', trigger: 'blur' },
         ],
-        name: [
-          { required: true, message: '请输入真实姓名', trigger: 'blur' },
-          { max: 20, message: '真实姓名最多输入20个字符', trigger: 'blur'},
+        RESOURCE_NAME: [
+          { required: true, message: '请输入资源名称', trigger: 'blur' }
         ],
       }
     }
@@ -62,49 +60,27 @@ export default {
   mounted() {
   },
   methods: {
-    initData() {
-      this.$ajax.post(this.$adminApi.getRole).then(res => {
-        if (res && res.data && res.data.data) {
-          let data = res.data.data
-          this.roleData = data
-        }
-      })
-    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.dialogState.formData.status = this.dialogState.formData.status
-            ? '1'
-            : '0'
-          let params = this.$util.objToFormData(this.dialogState.formData)
-
           if (this.dialogState.type == 'edit') {
-            this.$ajax.post(this.$adminApi.editUserInfo, params).then(res => {
-              if (res && res.data && res.data.data == 1) {
-                this.$message({
-                  message: '修改成功',
-                  type: 'success'
-                })
+            this.$ajax.post(this.$api.editTableRes, this.dialogState.formData).then(res => {
+              if (res && res.data && res.data.errno == 0) {
+                this.$message.editSuccess()
                 this.$emit('initData')
-
                 this.dialogState.show = false
+              }else{
+                this.$message.editError(res.data.errmsg)
               }
             })
           } else {
-            this.$ajax.post(this.$adminApi.addUserInfo, params).then(res => {
-              if (res && res.data && res.data.data == 1) {
-                this.$message({
-                  message: '添加成功',
-                  type: 'success'
-                })
+            this.$ajax.post(this.$api.addTableRes, this.dialogState.formData).then(res => {
+              if (res && res.data && res.data.errno == 0) {
+                this.$message.addSuccess()
                 this.$emit('initData')
-
                 this.dialogState.show = false
               } else {
-                this.$message({
-                  message: res.data.msg,
-                  type: 'warning'
-                })
+                this.$message.addError(res.data.errmsg)
               }
             })
           }

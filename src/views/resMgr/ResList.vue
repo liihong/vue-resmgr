@@ -149,10 +149,15 @@ export default {
     },
     //导出
     handleExport() {
-      // const href = this.$api.exportExcel + '?tableId=' + this.tableId
-      // window.location.href = href
+      let params = {
+        tableId: this.tableId
+      }
+      if (this.filters.name != '') {
+        params.queryColumn = this.filters.columns
+        params.queryKey = this.filters.name
+      }
       this.$ajax
-        .getBolb(this.$api.exportExcel, { tableId: this.tableId })
+        .getBolb(this.$api.exportExcel, params)
         .then(res => {
           if (res.data) {
             let url = URL.createObjectURL(res.data)
@@ -168,8 +173,6 @@ export default {
             // 删除添加的a链接
             let objLink = document.getElementById('downloadLink')
             document.body.removeChild(objLink)
-            // 释放内存
-            // URL.revokeOjbectURL(url)
           }
         })
     },

@@ -1,5 +1,6 @@
 const Base = require('./base.js');
 import util from '../../utils/util'
+const nodeExcel = require("excel-export"); //首先，引入excel模块：
 
 module.exports = class extends Base {
     async indexAction() {
@@ -19,6 +20,59 @@ module.exports = class extends Base {
             return this.fail(err)
         }
     }
+    // 导出Excel
+    async exportExcelAction() {
+        const res = this.ctx.res;
+        const req = this.ctx.req;
+        const tableId = this.get('tableId')
+        let queryColumn = this.get('queryColumn')
+        let queryKey = this.get('queryKey')
+        let whereObj = {}
+        if (!!queryColumn) {
+            if (queryKey.includes(',')) {
+                whereObj[`${queryColumn}`] = ['IN', `${queryKey}`]
+            } else {
+                whereObj[`${queryColumn}`] = ['like', `%${queryKey}%`]
+            }
+        }
+        var confs = [];
+        var conf = {};
+        let colArr = []
+        let colunms = await this.model('resource_table_column').getColumnList(tableId, 'EXPORT')
+        let tables = await this.model('resource_table').getTableInfo(tableId)
+
+        colunms.map(item => {
+            colArr.push({
+                caption: item.column_cname,
+                type: 'string'
+            })
+        })
+        let colunmsQuery = colunms.map(item => {
+            return item.column_name
+        })
+        conf.cols = colArr;
+        let tableData = await this.model('tableData').getTableData(tableId, 'EXPORT', whereObj)
+        let infos = []
+        tableData.map(item => {
+            let datas = []
+            Object.keys(item).map(el => {
+                datas.push(item[el])
+            })
+            infos.push(datas)
+        })
+
+        conf.rows = infos
+        conf.name = tables.table_name;
+        confs.push(conf);
+
+        var result = nodeExcel.execute(confs);
+
+        var name = encodeURI(tables.resource_name);
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats;charset=utf-8');
+        res.setHeader("Content-Disposition", "filename=" + name + ".xlsx");
+        res.end(result, 'binary');
+    }
     // 根据配置查询某表的数据
     async queryTableDataAction() {
         try {
@@ -30,7 +84,7 @@ module.exports = class extends Base {
             let queryKey = this.get('queryKey')
             let whereObj = {}
             if (!!queryColumn) {
-                if(queryKey.includes(',')){
+                if (queryKey.includes(',')) {
                     whereObj[`${queryColumn}`] = ['IN', `${queryKey}`]
                 } else {
                     whereObj[`${queryColumn}`] = ['like', `%${queryKey}%`]
@@ -76,17 +130,17 @@ module.exports = class extends Base {
             let primaryKey = await this.model('resource_table_column').getPrimaryKey(tableId)
             let sql = 'select ' + primaryKey.typesql + ' Id from dual'
             let primaryKeyValue = ''
-            if(primaryKey.typesql != ''){
+            if (primaryKey.typesql != '') {
                 let tData = await this.model('resource_table_column').getTypeSqlData(sql)
                 primaryKeyValue = tData[0].Id
             } else {
-                primaryKeyValue =  util.getUUId()
+                primaryKeyValue = util.getUUId()
             }
             form[primaryKey.column_name.toLowerCase()] = primaryKeyValue
             let table = await this.model('resource_table').getTableInfo(tableId)
             let affectedRows = await this.model(table.table_name).add(form);
             return this.success(affectedRows)
-        }catch(ex) {
+        } catch (ex) {
             return this.fail(ex)
         }
     }
@@ -98,12 +152,12 @@ module.exports = class extends Base {
             let updateInfo = this.post('form')
             let primaryKey = this.post('primaryKey')
             let table = await this.model('resource_table').getTableInfo(tableId)
-            
+
             let affectedRows = await this.model(table.table_name).where(
                 `${primaryKey.name}=${primaryKey.value}`
             ).update(updateInfo);
             return this.success(affectedRows)
-        }catch(ex) {
+        } catch (ex) {
             return this.fail(ex)
         }
 
@@ -117,7 +171,7 @@ module.exports = class extends Base {
             let table = await this.model('resource_table').getTableInfo(tableId)
             let affectedRows = await this.model(table.table_name).where(updateInfo).delete();
             return this.success(affectedRows)
-        }catch(ex) {
+        } catch (ex) {
             return this.fail(ex)
         }
     }

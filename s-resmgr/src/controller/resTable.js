@@ -1,8 +1,14 @@
 const Base = require('./base.js');
 
+let model = 'resource_table'
 module.exports = class extends Base {
     async indexAction() {
-        return 'hahah'
+        try{
+            const data = await this.model(model).select()
+            return this.success(data)
+        } catch (err) {
+            return this.fail(err)
+        }
     }
     // 获取所有资源信息
     async getResColumnDataAction() {
@@ -21,31 +27,31 @@ module.exports = class extends Base {
     }
     // 添加资源
     async addTableResAction() {
-
+        try {
+            let addInfo = this.post()
+            let affectedRows = await this.model('resource_table').add(addInfo);
+            return this.success(affectedRows)
+        }catch(ex) {
+            return this.fail(ex)
+        }
     }
 
     // 修改资源
     async editTableResAction() {
         try {
-            let tableId = this.post('tableId')
             let updateInfo = this.post()
-            delete updateInfo.tableId;
-            let table = await this.model('resource_table').getTableInfo(tableId)
-            let affectedRows = await this.model(table.table_name).where().update(updateInfo);
+            let table_id = updateInfo.TABLE_ID
+            let affectedRows = await this.model('resource_table').where({table_id}).update(updateInfo);
             return this.success(affectedRows)
         }catch(ex) {
             return this.fail(ex)
         }
-
     }
 
     async deleteTableResAction() {
         try {
-            let tableId = this.post('tableId')
             let updateInfo = this.post()
-            delete updateInfo.tableId;
-            let table = await this.model('resource_table').getTableInfo(tableId)
-            let affectedRows = await this.model(table.table_name).where(updateInfo).delete();
+            let affectedRows = await this.model('resource_table').where(updateInfo).delete();
             return this.success(affectedRows)
         }catch(ex) {
             return this.fail(ex)

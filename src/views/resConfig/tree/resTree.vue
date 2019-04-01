@@ -1,6 +1,6 @@
 <template>
   <div>
-   <el-button size="small" type="primary" icon="el-icon-circle-plus" @click="newRes">新增资源</el-button>
+   <!-- <el-button size="small" type="primary" icon="el-icon-circle-plus" @click="newRes">新增资源</el-button> -->
     <el-tree ref="menuTree" lazy :data="data" node-key="id" :default-expanded-keys="['01']" :props="defaultProps" :load="loadData" @node-click="selectTree"></el-tree>
     <resForm :dialogState="dialogState"></resForm>
   </div>
@@ -8,7 +8,7 @@
 <script>
 
 import Tree from 'element-ui'
-import resForm from './resForm'
+import resForm from '../components/resForm'
 export default {
   extends: Tree,
   components:{

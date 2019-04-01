@@ -16,7 +16,7 @@ export default new Router({
         {
           path: '/resMgr',
           name: '资源管理',
-          component: () => import('../views/resConfig/ResConfigList.vue')
+          component: () => import('../views/resConfig')
         },
         {
           path: '/resAttrEdit',

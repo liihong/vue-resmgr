@@ -11,7 +11,7 @@ let api = {
   getTableColumns: '/resTableColumn/getTableColumn',
   getDropDownListData: '/resTableColumn/getDropDownListData',
  
-
+  getTableRes: '/resTable',
   addTableRes: '/resTable/addTableRes',
   editTableRes: '/resTable/editTableRes',
   deleteTableRes: '/resTable/deleteTableRes',
@@ -24,6 +24,6 @@ let api = {
   addTableData: '/tableData/add',
   editTableData: '/tableData/edit',
   deleteTableData: '/tableData/delete',
-  exportExcel: '/excel/exportExcel'
+  exportExcel: '/tableData/exportExcel'
 }
 export default api

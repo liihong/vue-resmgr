@@ -1,7 +1,6 @@
 module.exports = class extends think.Model {
-    async getTableData(tableId, flag){
+    async getTableData(tableId, flag, whereObj){
       
-        let whereObj = {}
         let table = await this.model('resource_table').getTableInfo(tableId);
         let displayColumn = await this.model('resource_table_column').getColumnList(tableId, flag)
         let queryColumns = []

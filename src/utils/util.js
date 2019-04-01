@@ -50,6 +50,17 @@ util.undecodeStr = function (str) {
     return result.join('')
 }
 /**
+ * 判断字符串是否为空
+ * @param {*} str 
+ */
+util.isNotEmpty = function (str) {
+    let flag = false
+    if(str != null && str != undefined && str != '' && str != 'null') {
+        flag = true
+    }
+    return flag
+}
+/**
  * 判断传入对象的数据类型,返回对象字符串
  * String
  * Number
