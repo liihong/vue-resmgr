@@ -245,7 +245,7 @@ export default {
       this.$ajax.post(this.$api.addTableResColumns, params).then(res => {
         if (res && res.data && res.data.errno == 0) {
           this.$message.success()
-          this.$emit('initData')
+          this.getColumnData()
           this.dialogState.show = false
         } else {
           this.$message.error(res.data.errmsg)
@@ -261,6 +261,7 @@ export default {
           .then(res => {
             if (res && res.data && res.data.errno == 0) {
               this.$message.success()
+              this.getColumnData()
             } else {
               this.$message.error(res.data.errmsg)
             }
@@ -276,6 +277,7 @@ export default {
           .then(res => {
             if (res && res.data && res.data.errno == 0) {
               this.$message.success()
+              this.getColumnData()
             } else {
               this.$message.error(res.data.errmsg)
             }

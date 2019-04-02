@@ -6,7 +6,7 @@
         <el-form-item>模糊查询:</el-form-item>
         <el-form-item item-width="300px">
           <el-select v-model="filters.columns" @change="changeSelectQuery" filterable placeholder="请选择">
-            <el-option v-for="item in resRows" :key="item.column_cname" :label="item.column_cname" :value="item.column_name" v-if="item.PROPERTY_TYPE != '10'">
+            <el-option v-for="item in resRows" :key="item.COLUMN_CNAME" :label="item.COLUMN_CNAME" :value="item.COLUMN_NAME" v-if="item.PROPERTY_TYPE != '10'">
             </el-option>
           </el-select>
         </el-form-item>

@@ -18,6 +18,7 @@ let api = {
   
   //根据配置创建物理表
   createTable: '/resTable/createTable',
+  loadTable: '/resTable/loadTable',
 
   // 资源属性的操作
   addTableResColumns: '/resTableColumn/addTableResColumns',
