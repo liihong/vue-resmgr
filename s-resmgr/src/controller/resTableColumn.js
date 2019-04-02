@@ -5,6 +5,16 @@ module.exports = class extends Base {
         return 'hahah'
     }
     // 编辑字段配置统一保存
+    async addTableResColumnsAction(){
+        let tableId = this.post('tableId')
+        let updateInfos = this.post('form')
+
+        let deleteInfo = await this.model('resource_table_column').where({table_id: ['=', tableId]}).delete();
+        console.log(deleteInfo)
+        const data = await this.model('resource_table_column').addMany(updateInfos,{pk: 'COLUMN_ID',where: `TABLE_ID=${tableId}`});
+        return this.success(data)
+    }
+    // 编辑字段配置统一保存
     async editTableResColumnsAction(){
         let tableId = this.post('tableId')
         let updateInfos = this.post('form')

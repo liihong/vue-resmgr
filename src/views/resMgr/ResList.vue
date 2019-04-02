@@ -6,12 +6,12 @@
         <el-form-item>模糊查询:</el-form-item>
         <el-form-item item-width="300px">
           <el-select v-model="filters.columns" @change="changeSelectQuery" filterable placeholder="请选择">
-            <el-option v-for="item in resRows" :key="item.column_cname" :label="item.column_cname" :value="item.column_name" v-if="item.property_type != '10'">
+            <el-option v-for="item in resRows" :key="item.column_cname" :label="item.column_cname" :value="item.column_name" v-if="item.PROPERTY_TYPE != '10'">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-if="selectObj.property_type == '2' || selectObj.property_type == '4'" v-model="filters.value" multiple filterable placeholder="请选择">
+          <el-select v-if="selectObj.PROPERTY_TYPE == '2' || selectObj.PROPERTY_TYPE == '4'" v-model="filters.value" multiple filterable placeholder="请选择">
             <el-option v-for="item in selectObj['data']" :key="item.id" :label="item.NAME" :value="item.id">
             </el-option>
           </el-select>
@@ -44,7 +44,7 @@
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column v-if="row.isunique != '1'" v-for="(row,index) in resRows" :key="index" :prop="row.column_name" :fixed="(row.is_frozen == 1?'left':false)" :label="row.column_cname" :min-width="(row.columnlength != '')?row.columnlength:150" sortable>
+      <el-table-column v-if="row.PROPERTY_TYPE != '10'" v-for="(row,index) in resRows" :key="index" :prop="row.COLUMN_NAME" :fixed="(row.IS_FROZEN == 1?'left':false)" :label="row.COLUMN_CNAME" :min-width="(row.COLUMNLENGTH != '')?row.COLUMNLENGTH:150" sortable>
       </el-table-column>
     </el-table>
     <!--工具条-->
@@ -88,8 +88,8 @@ export default {
     primaryKey() {
       let key = ''
       this.resRows.map(item => {
-        if (item.property_type == '10') {
-          key = item.column_name
+        if (item.PROPERTY_TYPE == '10') {
+          key = item.COLUMN_NAME
         }
       })
       return key
@@ -98,11 +98,11 @@ export default {
   methods: {
     changeSelectQuery(name) {
       this.selectObj = this.resRows.filter(item => {
-        return item.column_name == name
+        return item.COLUMN_NAME == name
       })[0]
       if (
-        this.selectObj.property_type == '2' ||
-        this.selectObj.property_type == '4'
+        this.selectObj.PROPERTY_TYPE == '2' ||
+        this.selectObj.PROPERTY_TYPE == '4'
       ) {
         this.getSjzdData('data', this.selectObj.typesql)
       }
@@ -156,25 +156,23 @@ export default {
         params.queryColumn = this.filters.columns
         params.queryKey = this.filters.name
       }
-      this.$ajax
-        .getBolb(this.$api.exportExcel, params)
-        .then(res => {
-          if (res.data) {
-            let url = URL.createObjectURL(res.data)
-            let fileName = res.headers['content-disposition'].split('=')[1]
-            fileName = decodeURI(fileName)
-            let link = document.createElement('a')
-            link.style.display = 'none'
-            link.href = url
-            link.setAttribute('id', 'downloadLink')
-            link.setAttribute('download', fileName)
-            document.body.appendChild(link)
-            link.click()
-            // 删除添加的a链接
-            let objLink = document.getElementById('downloadLink')
-            document.body.removeChild(objLink)
-          }
-        })
+      this.$ajax.getBolb(this.$api.exportExcel, params).then(res => {
+        if (res.data) {
+          let url = URL.createObjectURL(res.data)
+          let fileName = res.headers['content-disposition'].split('=')[1]
+          fileName = decodeURI(fileName)
+          let link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.setAttribute('id', 'downloadLink')
+          link.setAttribute('download', fileName)
+          document.body.appendChild(link)
+          link.click()
+          // 删除添加的a链接
+          let objLink = document.getElementById('downloadLink')
+          document.body.removeChild(objLink)
+        }
+      })
     },
     //新增按钮
     handleAdd() {
@@ -191,17 +189,15 @@ export default {
       })
     },
     handleDelete(row) {
-      this.$confirm('请确认是否删除?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      this.$message.confirmDelete(() => {
         let params = this.$util.objToFormData(row)
         params.append('tableId', this.tableId)
         this.$ajax.post(this.$api.deleteTableData, params).then(res => {
-          if (res && res.data && res.data.data == 1) {
-            this.$message({ message: '删除成功', type: 'success' })
+          if (res.data && res.data.data == 1) {
+            this.$message.deleteSuccess()
             this.getResList()
+          } else {
+            this.$message.deleteError(res.data.errmsg)
           }
         })
       })
@@ -215,18 +211,19 @@ export default {
     },
     //批量删除
     batchRemove: function() {
-      var ids = this.sels.map(item => item.id).toString()
+      var ids = this.sels.map(item => {
+        return item[this.primaryKey]
+      })
+      console.log(ids)
       this.$confirm('确认删除选中记录吗？', '提示', {
         type: 'warning'
       })
         .then(() => {
-          // this.listLoading = true
-          console.log(ids)
-          // let para = { ids: ids }
-          let params = this.$util.objToFormData(this.sels)
-          params.append('tableId', this.tableId)
+          let params = {}
+          params[this.primaryKey] =  ids
+          params['tableId'] =  this.tableId
           this.$ajax.post(this.$api.deleteTableData, params).then(res => {
-            if (res && res.data && res.data.data == 1) {
+            if (res && res.data && res.data.data > 0) {
               this.$message({ message: '删除成功', type: 'success' })
               this.getResList()
             }

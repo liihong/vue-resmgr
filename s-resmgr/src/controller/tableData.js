@@ -43,12 +43,12 @@ module.exports = class extends Base {
 
         colunms.map(item => {
             colArr.push({
-                caption: item.column_cname,
+                caption: item.COLUMN_CNAME,
                 type: 'string'
             })
         })
         let colunmsQuery = colunms.map(item => {
-            return item.column_name
+            return item.COLUMN_NAME
         })
         conf.cols = colArr;
         let tableData = await this.model('tableData').getTableData(tableId, 'EXPORT', whereObj)
@@ -94,22 +94,22 @@ module.exports = class extends Base {
             let displayColumn = await this.model('resource_table_column').getColumnList(tableId);
             let queryColumns = []
             displayColumn.map(item => {
-                switch (item.property_type) {
+                switch (item.PROPERTY_TYPE) {
                     case '1': // 文本框形式不需要翻译
-                        queryColumns.push(item.column_name)
+                        queryColumns.push(item.COLUMN_NAME)
                         break;
                     case '2': // 有外键关系,需要翻译
-                        queryColumns.push(`(SELECT NAME FROM (${item.typesql}) tras WHERE tras.id=${item.column_name}) ${item.column_name}`)
+                        queryColumns.push(`(SELECT NAME FROM (${item.TYPESQL}) tras WHERE tras.id=${item.COLUMN_NAME}) ${item.COLUMN_NAME}`)
                         break;
-                    case '4':
-                        queryColumns.push(item.column_name)
-                        break;
+                    case '4': //字段数据
+                    queryColumns.push(`(SELECT NAME FROM (${item.TYPESQL}) tras WHERE tras.id=${item.COLUMN_NAME}) ${item.COLUMN_NAME}`)
+                    break;
                     case '3': // 日期
-                    case '5':
-                        queryColumns.push(item.column_name)
+                    case '5': // 日期时间
+                        queryColumns.push(item.COLUMN_NAME)
                         break;
                     default:
-                        queryColumns.push(item.column_name)
+                        queryColumns.push(item.COLUMN_NAME)
                         break;
                 }
             })
@@ -128,15 +128,19 @@ module.exports = class extends Base {
             let form = this.post('form')
             // 获取主键
             let primaryKey = await this.model('resource_table_column').getPrimaryKey(tableId)
-            let sql = 'select ' + primaryKey.typesql + ' Id from dual'
-            let primaryKeyValue = ''
-            if (primaryKey.typesql != '') {
-                let tData = await this.model('resource_table_column').getTypeSqlData(sql)
-                primaryKeyValue = tData[0].Id
-            } else {
-                primaryKeyValue = util.getUUId()
+            
+            if(JSON.stringify(primaryKey) != '{}'){
+                let sql = 'select ' + primaryKey.typesql + ' Id from dual'
+                let primaryKeyValue = ''
+                if (!!primaryKey.typesql) {
+                    let tData = await this.model('resource_table_column').getTypeSqlData(sql)
+                    primaryKeyValue = tData[0].Id
+                } else {
+                    primaryKeyValue = util.getUUId()
+                }
+                form[primaryKey.column_name.toLowerCase()] = primaryKeyValue
             }
-            form[primaryKey.column_name.toLowerCase()] = primaryKeyValue
+            
             let table = await this.model('resource_table').getTableInfo(tableId)
             let affectedRows = await this.model(table.table_name).add(form);
             return this.success(affectedRows)

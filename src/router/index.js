@@ -19,12 +19,6 @@ export default new Router({
           component: () => import('../views/resConfig')
         },
         {
-          path: '/resAttrEdit',
-          name: '资源属性修改',
-          hidden: true,
-          component:  () => import('../views/resConfig/resAttrEdit.vue')
-        },
-        {
           path: '/resDisplay',
           name: '资源呈现',
           component: () => import('../views/resMgr/ResList.vue')

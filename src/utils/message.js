@@ -10,8 +10,21 @@ import {
 } from 'element-ui'
 import util from './util'
 
-let message = {}
-
+let message = Message
+message.success = function (msg) {
+    Notification({
+        title: '操作',
+        message: util.isNotEmpty(msg) ? msg : '操作成功',
+        type: 'success'
+    })
+}
+message.error = function (msg) {
+    Notification({
+        title: '操作',
+        message: util.isNotEmpty(msg) ? msg : '操作失败',
+        type: 'error'
+    })
+}
 message.addSuccess = function () {
     Notification({
         title: '添加',
@@ -55,6 +68,22 @@ message.deleteError = function (msg) {
         type: 'error'
     })
 }
+message.confirm = function (msg, resolve) {
+    return MessageBox.confirm( msg, '确认信息', {
+            distinguishCancelAndClose: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+        })
+        .then(() => {
+            resolve()
+        })
+        .catch(action => {
+            Message({
+                type: 'woring',
+                message: '取消'
+            })
+        });
+}
 message.confirmDelete = function (resolve) {
     return MessageBox.confirm('是否确定删除？', '确认信息', {
             distinguishCancelAndClose: true,
@@ -63,7 +92,6 @@ message.confirmDelete = function (resolve) {
         })
         .then(() => {
             resolve()
-            this.deleteSuccess()
         })
         .catch(action => {
             Message({

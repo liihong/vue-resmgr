@@ -11,10 +11,11 @@ module.exports = class extends think.Model {
             }
             complex[`is${flag}`] = '1'
             complex.ISUNIQUE = '1'
+            complex.PROPERTY_TYPE = '10'
             whereObj._complex = complex
             order = `${flag}_ORDER ASC`
         }
-        let data = await this.field(['column_name,columnlength,column_cname,data_type,isunique,property_type,typesql'])
+        let data = await this.field()
             .where(whereObj).order(order).select()
         return data
     }

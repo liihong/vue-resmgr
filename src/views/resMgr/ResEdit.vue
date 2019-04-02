@@ -3,37 +3,37 @@
     <el-card class='card-content'>
       <div slot='header' class='card-header'>{{optionType == 'add' ? '新增' : '编辑'}}</div>
       <el-form class="form" :inline="true" ref="form" :model="formData" label-width="120px" size="small">
-        <el-row v-show="item.property_type !== '10'" v-for="(item,i) in columnData" :key="i" class="item">
+        <el-row v-show="item.PROPERTY_TYPE !== '10'" v-for="(item,i) in columnData" :key="i" class="item">
           <el-col :span="8" class="title">
-            <span>{{item.column_cname}}</span>
+            <span>{{item.COLUMN_CNAME}}</span>
           </el-col>
           <el-col :span="16">
             <!--主键-->
-            <template v-if="item.property_type == '10'">
-              <span v-show="false">{{formData[(item.column_name).toLowerCase()]}}</span>
+            <template v-if="item.PROPERTY_TYPE == '10'">
+              <span v-show="false">{{formData[item.COLUMN_NAME]}}</span>
             </template>
-            <template v-else-if="item.property_type == '2'">
+            <template v-else-if="item.PROPERTY_TYPE == '2'">
               <!--下拉选择-->
-              {{formData[item.column_name]}}
-              <el-select style="width:100%" remote :remote-method="getSjzdData" v-model="formData[item.column_name.toLowerCase()]">
-                <el-option v-for="(item,key) in dropDownListData[item.column_name.toLowerCase()]" :key="key" :label="item.NAME" :value="item.id"></el-option>
+              {{formData[item.COLUMN_NAME]}}
+              <el-select style="width:100%" remote :remote-method="getSjzdData" v-model="formData[item.COLUMN_NAME]">
+                <el-option v-for="(item,key) in dropDownListData[item.COLUMN_NAME]" :key="key" :label="item.NAME" :value="item.id"></el-option>
               </el-select>
             </template>
 
-            <template v-else-if="item.property_type == '4'">
+            <template v-else-if="item.PROPERTY_TYPE == '4'">
               <!--数据字典-->
-              <el-select  style="width:100%" v-model="formData[item.column_name.toLowerCase()]">
-                <el-option v-for="(item,key) in dropDownListData[item.column_name.toLowerCase()]" :key="key" :label="item.NAME" :value="item.id"></el-option>
+              <el-select  style="width:100%" v-model="formData[item.COLUMN_NAME]">
+                <el-option v-for="(item,key) in dropDownListData[item.COLUMN_NAME]" :key="key" :label="item.NAME" :value="item.id"></el-option>
               </el-select>
             </template>
 
-            <template v-else-if="item.property_type == '5'">
+            <template v-else-if="item.PROPERTY_TYPE == '5'">
               <!--日期-->
-              <el-date-picker value-format="yyyy-MM-DD"  style="width:100%" v-model="formData[(item.column_name).toLowerCase()]" type="date" placeholder="选择日期">
+              <el-date-picker value-format="yyyy-MM-DD"  style="width:100%" v-model="formData[(item.COLUMN_NAME)]" type="date" placeholder="选择日期">
               </el-date-picker>
             </template>
             <template v-else>
-              <el-input width="320" v-model="formData[(item.column_name).toLowerCase()]"></el-input>
+              <el-input width="320" v-model="formData[(item.COLUMN_NAME)]"></el-input>
             </template>
           </el-col>
         </el-row>
@@ -72,11 +72,11 @@ export default {
     const vm = this
     this.getConfig().then(() => {
       this.columnData.forEach(item => {
-        if (item.property_type == '2' || item.property_type == '4') {
-          vm.getSjzdData(item.column_name.toLowerCase(), item.typesql)
+        if (item.PROPERTY_TYPE == '2' || item.PROPERTY_TYPE == '4') {
+          vm.getSjzdData(item.COLUMN_NAME.toLowerCase(), item.typesql)
         }
-        if(item.property_type == '10'){
-          this.primaryKey.name = item.column_name
+        if(item.PROPERTY_TYPE == '10'){
+          this.primaryKey.name = item.COLUMN_NAME
         }
       })
     })
@@ -91,15 +91,19 @@ export default {
         params.primaryKey = this.primaryKey
         this.$ajax.post(this.$api.editTableData, params).then(res => {
           if (res && res.data && res.data.data == 1) {
-            this.$message('修改成功')
+            this.$message.editSuccess()
             this.$router.go(-1)
+          }else{
+            this.$message.editError(res.data.errmsg)
           }
         })
       } else {
         this.$ajax.post(this.$api.addTableData, params).then(res => {
           if (res && res.data && res.data.data == 0) {
-            this.$message('添加成功')
+           this.$message.addSuccess()
             this.$router.go(-1)
+          }else{
+            this.$message.addError(res.data.errmsg)
           }
         })
       }

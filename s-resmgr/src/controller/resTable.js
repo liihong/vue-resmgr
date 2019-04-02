@@ -57,4 +57,45 @@ module.exports = class extends Base {
             return this.fail(ex)
         }
     }
+
+    //根据配置创建物理表
+    async createTableAction() {
+        try {
+            let tableId = this.post('tableId')
+            console.log(tableId)
+            let tableInfo = await this.model('resource_table').getTableInfo(tableId)
+            let tableColumns = await  this.model('resource_table_column').getColumnList(tableId)
+            // `FORM_ID` VARCHAR(40) NOT NULL COMMENT '表单id,主键',
+
+            let sql = 'create table ' + tableInfo.table_name + ' (';
+            let columns = [],pk = ''
+            tableColumns.map(item=>{
+                let infos = `${item.column_name}`
+                switch(item.data_type){
+                    case '1' ://字符串
+                        infos += ' VARCHAR(255) '
+                        break
+                    case '2' :// 数值
+                        infos += ' INT(11) '
+                        break
+                    case '3' ://日期
+                        infos += ' DATETIME '
+                        break
+                }
+                infos += " COMMENT '"+ item.column_cname +"' "
+                if(item.property_type == '10') {
+                    pk = ', PRIMARY KEY (`'+ item.column_name +'`) '
+                }
+                columns.push(infos)
+            })
+            sql = sql + columns.join(',') + pk + ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='" + tableInfo.resource_name +"' ;"
+            let dropTbale = 'drop table ' + tableInfo.table_name 
+            let delFlag = await this.model().execute(dropTbale);
+
+            let flag = await this.model().execute(sql);
+            return this.success(flag);
+        }catch(ex) {
+            return this.fail(ex)
+        }
+    }
 };

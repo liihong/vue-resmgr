@@ -15,9 +15,13 @@ let api = {
   addTableRes: '/resTable/addTableRes',
   editTableRes: '/resTable/editTableRes',
   deleteTableRes: '/resTable/deleteTableRes',
+  
+  //根据配置创建物理表
+  createTable: '/resTable/createTable',
 
+  // 资源属性的操作
+  addTableResColumns: '/resTableColumn/addTableResColumns',
   editTableResColumns: '/resTableColumn/editTableResColumns',
-
   //对物理表进行操作的接口
   queryTableData: '/tableData/queryTableData',
   queryDataById: '/tableData/queryTableDataById',

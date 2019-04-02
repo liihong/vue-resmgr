@@ -67,7 +67,6 @@ export default {
       this.dialogState.formData = row
     },
     handleEditAttr(row) {
-        console.log(row)
       this.$router.push({
         path: '/resConfigList',
         query: { tableId: row['TABLE_ID'] }
@@ -77,6 +76,7 @@ export default {
       this.$message.confirmDelete(() => {
         this.$ajax.post(this.$api.deleteTableRes, row).then(res => {
           if (res.data && res.data.errno == 0) {
+            this.$message.deleteSuccess()
             this.initData()
           } else {
             this.$message.deleteError(res.data.errmsg)
