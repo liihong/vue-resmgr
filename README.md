@@ -11,22 +11,37 @@
 ##目录说明
 s-resmgr 服务端目录
 
-## Project setup
+## 环境依赖
+ > - node: >= 4.0.0
+ > - npm: >= 3.0.0
+
+## 组件依赖
+##### 基本组件
+   > - vue
+   > - vue-router
+   > - vue-scroller
+   > - vuex
+## 部署步骤
+1. 安装MySQL数据库
+2. 新建数据库，并执行s-resmgr/sql目录下的SQL文件创建基础表
+3. 运行代码
 ```
-npm install
+  npm install   // 安装node运行环境
+```
+  npm run serve  // 本地开启调试
+```
+  npm run build // 编译发布
 ```
 
-### Compiles and hot-reloads for development
+打开s-resmgr目录
 ```
-npm run serve
+  npm install   // 安装node运行环境
 ```
+  npm start  // 打开后台接口程序
+```   
+  ### 测试访问
 
-### Compiles and minifies for production
-```
-npm run build
-```
+  本地调试地址：[http://127.0.0.1:8080](http://127.0.0.1:8080)
 
-### Lints and fixes files
-```
-npm run lint
-```
+  
+
