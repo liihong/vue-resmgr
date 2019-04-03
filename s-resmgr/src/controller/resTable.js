@@ -72,8 +72,8 @@ module.exports = class extends Base {
             let columns = [],
                 pk = ''
             tableColumns.map(item => {
-                let infos = `${item.column_name}`
-                switch (item.data_type) {
+                let infos = `${item.COLUMN_NAME}`
+                switch (item.DATA_TYPE) {
                     case '1': //字符串
                         infos += ' VARCHAR(255) '
                         break
@@ -84,9 +84,9 @@ module.exports = class extends Base {
                         infos += ' DATETIME '
                         break
                 }
-                infos += " COMMENT '" + item.column_cname + "' "
+                infos += " COMMENT '" + item.COLUMN_CNAME + "' "
                 if (item.property_type == '10') {
-                    pk = ', PRIMARY KEY (`' + item.column_name + '`) '
+                    pk = ', PRIMARY KEY (`' + item.COLUMN_NAME + '`) '
                 }
                 columns.push(infos)
             })
