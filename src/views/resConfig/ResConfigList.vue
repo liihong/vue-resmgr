@@ -12,6 +12,11 @@
         <el-table-column type="index" width="40"></el-table-column>
         <el-table-column type="selection" width="45">
         </el-table-column>
+         <el-table-column label="操作" width="50" align="center">
+          <template slot-scope="scope">
+            <el-button size="mini" circle icon="el-icon-edit-outline" type="primary" @click="handleEdit(scope.row)"></el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="字段属性" prop="ATTRIBUTE_TYPE" width="130">
           <template slot-scope="scope">
             <el-select v-model="scope.row.ATTRIBUTE_TYPE" placeholder="请选择">
@@ -211,10 +216,6 @@ export default {
       this.dialogState.formData = row
     },
     addResAttr() {
-      // this.dialogState.show = !this.dialogState.show
-      // this.dialogState.type = 'add'
-      // this.dialogState.name = '新增字段'
-      // this.dialogState.formData = {}
       this.tableData.push({
         ATTRIBUTE_TYPE: '1',
         PROPERTY_TYPE: '1',

@@ -22,9 +22,9 @@
         </el-table-column>
         <el-table-column label="资源名称" prop="RESOURCE_NAME" min-width="150">
         </el-table-column>
-        <el-table-column label="是否必填" prop="ISLIST">
+        <el-table-column label="是否视图" prop="ISVIEW" align="center">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.ISMUST" active-value="1" inactive-value="0">
+            <el-switch v-model="scope.row.ISVIEW" active-value="1" inactive-value="0">
             </el-switch>
           </template>
         </el-table-column>
