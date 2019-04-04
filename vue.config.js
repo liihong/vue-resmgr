@@ -10,10 +10,20 @@ function addStyleResource(rule) {
             ],
         });
 }
+
+function resolve(dir) {
+    return path.join(__dirname, dir)
+}
 module.exports = {
     chainWebpack: (config) => {
         const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
         types.forEach(type => addStyleResource(config.module.rule('less').oneOf(type)));
+        config.module.rules.delete("svg");
+        config.module.rule('svg-smart').test(/\.svg$/).include.add(resolve('src/icons/svg')).end().use('svg-sprite-loader')
+            .loader('svg-sprite-loader')
+            .options({
+                symbolId: 'icon-[name]'
+            })
     },
     devServer: {
         proxy: {
@@ -29,5 +39,7 @@ module.exports = {
                 },
             }
         }
-    }
+    },
+    // 是否为生产环境构建生成 source map？
+    productionSourceMap: false
 }

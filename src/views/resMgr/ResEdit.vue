@@ -14,26 +14,24 @@
             </template>
             <template v-else-if="item.PROPERTY_TYPE == '2'">
               <!--下拉选择-->
-              {{formData[item.COLUMN_NAME]}}
-              <el-select style="width:100%" remote :remote-method="getSjzdData" v-model="formData[item.COLUMN_NAME.toLowerCase()]">
-                <el-option v-for="(item,key) in dropDownListData[item.COLUMN_NAME.toLowerCase()]" :key="key" :label="item.NAME" :value="item.id"></el-option>
+              <el-select style="width:100%" remote :remote-method="getSjzdData" v-model="formData[item.COLUMN_NAME]">
+                <el-option v-for="(item,key) in dropDownListData[item.COLUMN_NAME]" :key="key" :label="item.NAME" :value="item.id"></el-option>
               </el-select>
             </template>
-
             <template v-else-if="item.PROPERTY_TYPE == '4'">
               <!--数据字典-->
               <el-select  style="width:100%" v-model="formData[item.COLUMN_NAME]">
-                <el-option v-for="(item,key) in dropDownListData[item.COLUMN_NAME.toLowerCase()]" :key="key" :label="item.NAME" :value="item.id"></el-option>
+                <el-option v-for="(item,key) in dropDownListData[item.COLUMN_NAME]" :key="key" :label="item.NAME" :value="item.id"></el-option>
               </el-select>
             </template>
 
             <template v-else-if="item.PROPERTY_TYPE == '5'">
               <!--日期-->
-              <el-date-picker value-format="yyyy-MM-DD"  style="width:100%" v-model="formData[(item.COLUMN_NAME).toLowerCase()]" type="date" placeholder="选择日期">
+              <el-date-picker value-format="yyyy-MM-DD"  style="width:100%" v-model="formData[(item.COLUMN_NAME)]" type="date" placeholder="选择日期">
               </el-date-picker>
             </template>
             <template v-else>
-              <el-input width="320" v-model="formData[(item.COLUMN_NAME).toLowerCase()]"></el-input>
+              <el-input width="320" v-model="formData[(item.COLUMN_NAME)]"></el-input>
             </template>
           </el-col>
         </el-row>
@@ -73,7 +71,7 @@ export default {
     this.getConfig().then(() => {
       this.columnData.forEach(item => {
         if (item.PROPERTY_TYPE == '2' || item.PROPERTY_TYPE == '4') {
-          vm.getSjzdData(item.COLUMN_NAME.toLowerCase(), item.TYPESQL)
+          vm.getSjzdData(item.COLUMN_NAME, item.TYPESQL)
         }
         if(item.PROPERTY_TYPE == '10'){
           this.primaryKey.name = item.COLUMN_NAME

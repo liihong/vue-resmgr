@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import resForm from './components/resForm'
+import resForm from './resForm'
 export default {
   components: {
     resForm

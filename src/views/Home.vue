@@ -3,7 +3,7 @@
   <div class="layout">
     <el-col :span="24" class="header">
       <el-col :span="10" class="logo" :class="'logo-width'">
-        <img class="logoImg" :src="logo" height="35">
+         <svg-icon icon-class="logo" />
         <h1>{{title}}</h1>
       </el-col>
       <el-col :span="10">
@@ -50,7 +50,6 @@
 </template>
 <script>
 import resTree from './resConfig/tree/resTree'
-import logo from '../assets/img/logo.svg'
 import userAvatar from '../assets/img/user.png'
 export default {
   components: {
@@ -58,7 +57,6 @@ export default {
   },
   data() {
     return {
-      logo: logo,
       title: 'Res Manager',
       userName: '我来也',
       userAvatar: userAvatar,

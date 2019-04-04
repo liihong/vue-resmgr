@@ -99,7 +99,7 @@
   </div>
 </template>
 <script>
-import resAttrForm from './components/resAttrForm'
+import resAttrForm from './resAttrForm'
 export default {
   components: {
     resAttrForm

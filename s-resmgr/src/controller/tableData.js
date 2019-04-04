@@ -12,7 +12,11 @@ module.exports = class extends Base {
             let tableId = this.get('tableId')
 
             let table = await this.model('resource_table').getTableInfo(tableId)
-            const data = await this.model(table.table_name).where({
+            let fileds = await this.model('resource_table_column').getColumnList(tableId)
+            fileds = fileds.map(item=>{
+                return item.COLUMN_NAME
+            })
+            const data = await this.model(table.table_name).field(fileds).where({
                 id: this.get('id')
             }).find()
             return this.success(data)

@@ -8,7 +8,7 @@
 <script>
 
 import Tree from 'element-ui'
-import resForm from '../components/resForm'
+import resForm from '../resForm'
 export default {
   extends: Tree,
   components:{

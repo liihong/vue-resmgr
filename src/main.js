@@ -9,6 +9,7 @@ import util from './utils/util'
 import './assets/css/theme/index.css'
 import message from './utils/message'
 import elementUI from 'element-ui'
+import '@/icons' // icon
 
 Vue.use(elementUI)
 
