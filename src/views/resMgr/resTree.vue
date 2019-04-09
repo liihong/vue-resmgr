@@ -1,9 +1,8 @@
 <template>
-  <div>
-    <!-- <el-button size="small" type="primary" icon="el-icon-circle-plus" @click="newRes">新增资源</el-button> -->
-    <el-tree ref="menuTree" lazy :data="data" node-key="id" :default-expanded-keys="['01']" :props="defaultProps" :load="loadData" @node-click="selectTree"></el-tree>
-    <resForm :dialogState="dialogState"></resForm>
-  </div>
+    <div>
+        <!-- <el-button size="small" type="primary" icon="el-icon-circle-plus" @click="newRes">新增资源</el-button> -->
+        <el-tree ref="menuTree" lazy :data="data" node-key="id" :default-expanded-keys="['01']" :props="defaultProps" :load="loadData" @node-click="selectTree"></el-tree>
+    </div>
 </template>
 <script>
 import Tree from 'element-ui'
@@ -54,7 +53,7 @@ export default {
       this.$store.commit('title', item['title'])
       this.$store.commit('tableId', item['id'])
       this.$router.push({
-        path: '/resConfigList',
+        path: '/resDisplay',
         query: { tableId: item['id'] }
       })
     }

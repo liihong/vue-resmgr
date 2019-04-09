@@ -27,17 +27,8 @@
       </el-col>
     </el-col>
     <div class="main">
-      <aside class="tree">
-        <resTree></resTree>
-      </aside>
       <section class="content-container">
         <div class="grid-content bg-purple-light">
-          <el-col :span="24" class="breadcrumb-container">
-            <el-breadcrumb separator=">">
-              <el-breadcrumb-item v-for="item in $route.matched" :key="item.path">{{item.name}}</el-breadcrumb-item>
-              <el-breadcrumb-item>{{$store.state.title}}</el-breadcrumb-item>
-            </el-breadcrumb>
-          </el-col>
           <el-col :span="24" class="content-wrapper">
             <transition name="fade" mode="out-in">
               <router-view class="router-view"></router-view>
@@ -120,17 +111,7 @@ export default {
     bottom: 0px;
     overflow: hidden;
     width: 100%;
-    .tree {
-      width: 200px;
-      .el-tree {
-        padding: 20px;
-        background-color: #eef1f6;
-      }
-    }
-  }
-  .breadcrumb-container {
-    padding: 20px;
-    border-bottom: 1px solid #eeeeee;
+    
   }
   .router-view {
     height: 100%;
@@ -142,16 +123,7 @@ export default {
 .content-container {
   flex: 1;
   overflow-y: scroll;
-  .breadcrumb-container {
-    .title {
-      width: 200px;
-      float: left;
-      color: #475669;
-    }
-    .breadcrumb-inner {
-      float: right;
-    }
-  }
+  
   .content-wrapper {
     background-color: #fff;
     height: 100%;

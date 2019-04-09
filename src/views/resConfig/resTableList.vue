@@ -1,26 +1,51 @@
 <template>
-  <div class="resConfig">
-    <aside class="tree">
-      <resTree></resTree>
-    </aside>
-    <section class="resConfigContent">
-      <el-row>
-        <el-col :span="24" class="breadcrumb-container">
-         <Breadcrumb/>
-        </el-col>
-      </el-row>
-      <router-view/>
-    </section>
+  <div>
+      <div style="margin: 10px">
+        <el-button size="small" type="primary" @click="addRes" icon="el-icon-circle-plus">新增</el-button>
+        <el-button size="small" type="primary" icon="el-icon-remove">批量删除</el-button>
+      </div>
+      <div class="table">
+        <el-table @row-dblclick="rowDblClick" ref="columnConfig" height="600" stripe border size="small" :data="tableData" style="width: 100%">
+          <el-table-column type="index" width="40"></el-table-column>
+          <el-table-column type="selection" width="45">
+          </el-table-column>
+          <el-table-column label="资源操作" width="150" align="center">
+            <template slot-scope="scope">
+              <el-button size="mini" circle icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)"></el-button>
+              <el-button size="mini" circle icon="el-icon-setting" type="warning" @click="handleEditAttr(scope.row)"></el-button>
+              <el-button size="mini" circle icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)"></el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="资源ID" prop="TABLE_ID" width="130">
+          </el-table-column>
+          <el-table-column label="资源表名" prop="TABLE_NAME" min-width="100">
+          </el-table-column>
+          <el-table-column label="资源名称" prop="RESOURCE_NAME" min-width="150">
+          </el-table-column>
+          <el-table-column label="是否视图" prop="ISVIEW" align="center">
+            <template slot-scope="scope">
+              <el-switch v-model="scope.row.ISVIEW" active-value="1" inactive-value="0">
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column label="排序SQL" prop="ORDERBY_SQL">
+          </el-table-column>
+          <el-table-column label="查询SQL" prop="WHERE_SQL" min-width="150">
+          </el-table-column>
+        </el-table>
+      </div>
+
+    <resForm :dialogState="dialogState" @initData="initData"></resForm>
   </div>
 </template>
 
 <script>
+import resForm from './resForm'
 import resTree from './tree/resTree'
-import Breadcrumb from '@/components/Breadcrumb/index'
 export default {
   components: {
-    resTree,
-    Breadcrumb
+    resForm,
+    resTree
   },
   data() {
     return {
@@ -106,33 +131,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.resConfig {
-  display: flex;
-  .tree {
-    width: 200px;
-    flex: 0.15;
-    .el-tree {
-      padding: 20px;
-      background-color: #eef1f6;
-    }
-  }
-  .resConfigContent {
-    flex: 1;
-    overflow: auto;
-    .breadcrumb-container {
-    border-bottom: 1px solid #eeeeee;
-    .title {
-      width: 200px;
-      float: left;
-      color: #475669;
-    }
-    .breadcrumb-inner {
-      float: right;
-    }
-  }
-  }
   .ivu-btn {
     margin-left: 10px;
   }
-}
 </style>

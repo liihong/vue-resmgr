@@ -3,19 +3,19 @@
     <aside class="tree">
       <resTree></resTree>
     </aside>
-    <section class="resConfigContent">
+    <div class="resConfigContent">
       <el-row>
         <el-col :span="24" class="breadcrumb-container">
          <Breadcrumb/>
         </el-col>
       </el-row>
       <router-view/>
-    </section>
+    </div>
   </div>
 </template>
 
 <script>
-import resTree from './tree/resTree'
+import resTree from './resTree'
 import Breadcrumb from '@/components/Breadcrumb/index'
 export default {
   components: {
@@ -109,7 +109,7 @@ export default {
 .resConfig {
   display: flex;
   .tree {
-    width: 200px;
+    width: 150px;
     flex: 0.15;
     .el-tree {
       padding: 20px;

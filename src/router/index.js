@@ -1,57 +1,27 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../views/Home.vue'
-
 Vue.use(Router)
+
+import routers from './routers'
+
+
+
 
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: '主页',
-      component: Home,
-      children:[
-        {
-          path: '/',
-          name: '资源管理',
-          component: () => import('@/views/resConfig')
-        },
-        {
-          path: '/resDisplay',
-          name: '资源呈现',
-          component: () => import('@/views/resMgr/ResList.vue')
-        },
-        {
-          path: '/resRelation',
-          name: '资源关系',
-          component: () => import('@/views/resConfig/resConfigList.vue')
-        },
-        {
-          path: '/resConfig',
-          name: '系统设置',
-          component: () => import('@/views/resConfig/resConfigList.vue')
-        },
-        {
-          path: '/resConfigList',
-          name: '资源字段列表',
-          hidden: true,
-          component:  () => import('@/views/resConfig/resConfigList.vue')
-        },
-        {
-          path: '/resEdit',
-          name: '资源修改',
-          hidden: true,
-          component:  () => import('@/views/resMgr/ResEdit.vue')
-        }
-      ]
-    },
-    {
-      path: '/login',
-      name: '登录',
-      hidden: true,
-      component:  () => import('@/views/login/login')
+  routes: routers,
+  // 判断是否需要登录权限 以及是否登录
+  beforeEach: ((to, from, next) => {
+    //这里判断用户是否登录，验证本地存储是否有token
+    if (sessionStorage.token && sessionStorage.token != null) { // 判断当前的token是否存在
+      next()
+    } else {
+      if (to.path == '/login') { //如果是登录页面路径，就直接next()
+        next()
+      } else { //不然就跳转到登录；
+        next('/login')
+      }
     }
-  ]
+  })
 })
