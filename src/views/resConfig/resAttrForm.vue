@@ -8,31 +8,55 @@
           <el-step title="函数配置"></el-step>
         </el-steps>
       </div>
-      <el-form :inline="true" :model="dialogState.formData" ref="ruleForm" label-width="140px" :rules="rules" class="demo-ruleForm">
-        <el-form-item label="字段ID" prop="COLUMN_ID">
-          <el-input size="small" v-model="dialogState.formData.COLUMN_ID"></el-input>
-        </el-form-item>
-        <el-form-item label="属性名称" prop="COLUMN_NAME">
-          <el-input size="small" v-model="dialogState.formData.COLUMN_NAME"></el-input>
-        </el-form-item>
-        <el-form-item label="属性中文名" prop="COLUMN_CNAME">
-          <el-input size="small" v-model="dialogState.formData.COLUMN_CNAME"></el-input>
-        </el-form-item>
-        <el-form-item label="默认值" prop="DEFAULT_VALUE">
-          <el-input size="small" v-model="dialogState.formData.DEFAULT_VALUE"></el-input>
-        </el-form-item>
-        <el-form-item label="是否验证唯一性" prop="ISUNIQUE">
-          <el-input size="small" v-model.number="dialogState.formData.ISUNIQUE"></el-input>
-        </el-form-item>
-        <el-form-item label="验证类型" prop="VALIDDATATYPE">
-          <el-input size="small" v-model.number="dialogState.formData.VALIDDATATYPE"></el-input>
-        </el-form-item>
-        <el-form-item label="文本框最大输入长度" prop="INPUTLENGTH">
-          <el-input size="small" v-model.number="dialogState.formData.INPUTLENGTH"></el-input>
-        </el-form-item>
-        <el-form-item label="备注" prop="REMARK">
-          <el-input size="small" v-model.number="dialogState.formData.REMARK"></el-input>
-        </el-form-item>
+      <el-form :model="dialogState.formData" ref="ruleForm" label-width="140px" :rules="rules" class="demo-ruleForm">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="字段ID" prop="COLUMN_ID">
+              <el-input size="small" v-model="dialogState.formData.COLUMN_ID"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="属性名称" prop="COLUMN_NAME">
+              <el-input size="small" v-model="dialogState.formData.COLUMN_NAME"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="属性中文名" prop="COLUMN_CNAME">
+              <el-input size="small" v-model="dialogState.formData.COLUMN_CNAME"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="默认值" prop="DEFAULT_VALUE">
+              <el-input size="small" v-model="dialogState.formData.DEFAULT_VALUE"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否验证唯一性" prop="ISUNIQUE">
+              <el-switch v-model.number="dialogState.formData.ISUNIQUE" active-value="1" inactive-value="0">
+              </el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="验证类型" prop="VALIDDATATYPE">
+              <el-input size="small" v-model.number="dialogState.formData.VALIDDATATYPE"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="文本框最大输入长度" prop="INPUTLENGTH">
+              <el-input size="small" v-model.number="dialogState.formData.INPUTLENGTH"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="16">
+            <el-form-item label="备注" prop="REMARK">
+              <el-input size="small" v-model.number="dialogState.formData.REMARK"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-row>
           <el-col :span="24" :offset=16>
             <el-form-item>
@@ -111,8 +135,8 @@ export default {
         }
       })
     },
-    nextStep(){
-      this.activeStep ++ 
+    nextStep() {
+      this.activeStep++
     }
   }
 }

@@ -297,7 +297,7 @@ export default {
   },
   watch: {
     $route() {
-      this.getColumnData()
+      // this.getColumnData()
     }
   }
 }

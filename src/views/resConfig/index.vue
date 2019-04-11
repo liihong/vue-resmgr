@@ -97,11 +97,6 @@ export default {
         if (res.data.length > 0) this.tableData = res.data
       })
     }
-  },
-  watch: {
-    $route() {
-      this.getColumnData()
-    }
   }
 }
 </script>
