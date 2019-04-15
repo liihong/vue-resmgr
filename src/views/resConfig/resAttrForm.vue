@@ -1,6 +1,6 @@
 <template>
   <div class="userForm">
-    <el-dialog size="small" width="80%" :title="dialogState.name" :visible.sync="dialogState.show" :close-on-click-modal="false">
+    <el-dialog size="small" width="60%" :title="dialogState.name" :visible.sync="dialogState.show" :close-on-click-modal="false">
       <div width="60%">
         <el-steps :active="activeStep" finish-status="success" align-center>
           <el-step title="通用基本配置"></el-step>
@@ -8,8 +8,8 @@
           <el-step title="函数配置"></el-step>
         </el-steps>
       </div>
-      <el-form :model="dialogState.formData" ref="ruleForm" label-width="140px" :rules="rules" class="demo-ruleForm">
-        <el-row>
+      <el-form style="width:90%;" :model="dialogState.formData" ref="ruleForm" label-width="140px" :rules="rules" class="demo-ruleForm">
+        <el-row v-if="activeStep == 0">
           <el-col :span="8">
             <el-form-item label="字段ID" prop="COLUMN_ID">
               <el-input size="small" v-model="dialogState.formData.COLUMN_ID"></el-input>
@@ -25,8 +25,6 @@
               <el-input size="small" v-model="dialogState.formData.COLUMN_CNAME"></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="默认值" prop="DEFAULT_VALUE">
               <el-input size="small" v-model="dialogState.formData.DEFAULT_VALUE"></el-input>
@@ -43,8 +41,6 @@
               <el-input size="small" v-model.number="dialogState.formData.VALIDDATATYPE"></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="文本框最大输入长度" prop="INPUTLENGTH">
               <el-input size="small" v-model.number="dialogState.formData.INPUTLENGTH"></el-input>
@@ -56,11 +52,15 @@
             </el-form-item>
           </el-col>
         </el-row>
-
+        <el-row v-else-if="activeStep == 1">
+          <!--下拉列表-->
+          <dropDown :dialogState="dialogState" v-if="dialogState.formData.PROPERTY_TYPE == 2"></dropDown>
+        </el-row>
         <el-row>
           <el-col :span="24" :offset=16>
             <el-form-item>
-              <el-button size="medium" type="primary" @click="nextStep">下一步</el-button>
+              <el-button size="medium"  v-if="activeStep !== 0" type="primary" @click="activeStep--">上一步</el-button>
+              <el-button size="medium" type="primary" @click="activeStep++">下一步</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -77,12 +77,14 @@
   </div>
 </template>
 <script>
+import dropDown from './components/dropDown.vue'
 export default {
   name: 'resForm',
-  components: {},
+  components: {
+    dropDown
+  },
   props: {
-    dialogState: Object,
-    groups: Array
+    dialogState: Object
   },
   data() {
     return {
@@ -99,7 +101,9 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() {
+    console.log(this.dialogState.formData)
+  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -134,9 +138,6 @@ export default {
           return false
         }
       })
-    },
-    nextStep() {
-      this.activeStep++
     }
   }
 }
