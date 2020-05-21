@@ -2,14 +2,14 @@
   "apps": [{
     "name": "resmgrServer",
     "script": "production.js",
-    "cwd": "/Users/lh/WebstormProjects/resmgrServer",
+    "cwd": "/Users/lh/WebstormProjects/vue-resmgr/s-resmgr",
     "exec_mode": "fork",
     "max_memory_restart": "1G",
     "autorestart": true,
     "node_args": [],
     "args": [],
     "env": {
-      
+      "PORT": 9001
     }
   }]
 }

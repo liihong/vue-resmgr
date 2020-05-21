@@ -2,7 +2,7 @@
   <div>
     <div style="margin: 10px">
       <el-button size="small" type="primary" @click="addResAttr" icon="el-icon-circle-plus">新增</el-button>
-      <el-button size="small" type="danger" icon="el-icon-remove">批量删除</el-button>
+      <el-button size="small" type="danger" @click="deleteResAttr" icon="el-icon-remove">批量删除</el-button>
       <el-button @click="saveClick" size="small" type="success" icon="el-icon-check">保存</el-button>
       <el-button size="small" type="warning" @click="loadTable" icon="el-icon-document">加载表</el-button>
       <el-button size="small" type="danger" @click="createTable" icon="el-icon-refresh">创建表</el-button>
@@ -227,6 +227,19 @@ export default {
       this.dialogState.type = 'edit'
       this.dialogState.name = '编辑字段'
       this.dialogState.formData = row
+    },
+    //删除字段
+    deleteResAttr(){
+      let params = {}
+       this.$ajax.post(this.$api.deleteTableResColumns, params).then(res => {
+        if (res && res.data && res.data.errno == 0) {
+          this.$message.success()
+          this.getColumnData()
+          this.dialogState.show = false
+        } else {
+          this.$message.error(res.data.errmsg)
+        }
+      })
     },
     // 点击保存
     saveClick() {

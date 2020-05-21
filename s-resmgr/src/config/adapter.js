@@ -39,8 +39,8 @@ exports.model = {
     database: 'scpc',
     // prefix: 'scglxt_',
     encoding: 'utf8',
-    host: 'localhost',
-    port: '3306',
+    host: '223.72.116.213',
+    port: '12304',
     user: 'root',
     password: '123456',
     dateStrings: true
